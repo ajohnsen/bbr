@@ -44,6 +44,10 @@ function initialize() {
       });
 
       map.setCenter(pos);
+      
+      var nextPos = getPositionFromPositionBeringAndLength(90,50,position.coords.latitude,position.coords.longitude);
+     	
+      setMarker(nextPos.lat,nextPos.lon);
 
     }, function() {
       handleNoGeolocation(true);
@@ -89,6 +93,24 @@ function deleteMarker(type){
   }
 
 }
+
+function getPositionFromPositionBeringAndLength(brng, dist, lat, lon) {
+    var radius=6371;
+    var θ = Number(brng).toRadians();
+    var δ = Number(dist) / radius; // angular distance in radians
+
+    var φ1 = lat.toRadians();
+    var λ1 = lon.toRadians();
+
+    var φ2 = Math.asin( Math.sin(φ1)*Math.cos(δ) +
+                        Math.cos(φ1)*Math.sin(δ)*Math.cos(θ) );
+    var λ2 = λ1 + Math.atan2(Math.sin(θ)*Math.sin(δ)*Math.cos(φ1),
+                             Math.cos(δ)-Math.sin(φ1)*Math.sin(φ2));
+    λ2 = (λ2+3*Math.PI) % (2*Math.PI) - Math.PI; // normalise to -180..+180º
+
+    return new LatLon(φ2.toDegrees(), λ2.toDegrees());
+}
+
 
 function handleNoGeolocation(errorFlag) {
   if (errorFlag) {
