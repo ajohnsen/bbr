@@ -66,16 +66,49 @@ function initialize() {
       });
   });    
 
-$("#sendLengde").click(function() {
-      var val = $("#lengde").val()
-      var postData=JSON.parse('{"Type": "Lengde", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
+  $("#sendLengde").click(function() {
+        var val = $("#lengde").val()
+        var postData=JSON.parse('{"Type": "Lengde", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
 
-      $.ajax({
-        type: "POST",
-        url: baseApiUri + sendpifmeldingAction,
-        data: postData
-      });
-  });      
+        $.ajax({
+          type: "POST",
+          url: baseApiUri + sendpifmeldingAction,
+          data: postData
+        });
+    });   
+
+  $("#sendLengde").click(function() {
+        var val = $("#lengde").val()
+        var postData=JSON.parse('{"Type": "Lengde", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
+
+        $.ajax({
+          type: "POST",
+          url: baseApiUri + sendpifmeldingAction,
+          data: postData
+        });
+    });  
+
+  $("#sendRetning").click(function() {
+        var val = $("#retning").val()
+        var postData=JSON.parse('{"Type": "Himmelretning", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
+
+        $.ajax({
+          type: "POST",
+          url: baseApiUri + sendpifmeldingAction,
+          data: postData
+        });
+    });  
+
+  $("#sendStop").click(function() {
+        var val = "true";
+        var postData=JSON.parse('{"Type": "Stopp", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
+
+        $.ajax({
+          type: "POST",
+          url: baseApiUri + sendpifmeldingAction,
+          data: postData
+        });
+    });              
 
 }
 
@@ -167,22 +200,16 @@ google.maps.event.addDomListener(window, 'load', initialize);
   </head>
   <body>
     <div id="menu" style="display: flex; min-width: 25%">
-      <form id="menuitem sendLength">
         Lengde: <input type="text" id="lengde">
-        <button id="sendLengde">Send Lengde</button>
-      </form>
-      <form id="menuitem sendDirection">
-        Retning:<select>
+        <button id="sendLengde">Send lengde</button>
+        Retning:<select id="retning">
         <option value="North">Nord</option>
         <option value="East">Øst</option>
         <option value="South">Sør</option>
         <option value="West">Vest</option>
       </select>
-        <input type="submit" value="Send retning">
-      </form>
-      <form id="menuitem sendStop">
-        <input type="submit" value="Send STOP">
-      </form>
+        <button id="sendRetning">Send retning</button>
+        <button id="sendStop">Send STOP</button>
         Melding: <input type="text" id="text">
         <button id="sendMelding">Send Melding</button>
     </div>
