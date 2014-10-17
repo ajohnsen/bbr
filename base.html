@@ -55,20 +55,27 @@ function initialize() {
     handleNoGeolocation(false);
   }
 
-  $("#send").click(function() {
+  $("#sendMelding").click(function() {
       var text = $("#text").val()
-      var postData=JSON.parse('{"Type": "Fritekst", "Innhold":"'+ text + '", "LagId": "4bdc79c"}');
+      var postData=JSON.parse('{"Type": "Fritekst", "Innhold":"'+ text + '", "LagId": "'+ appId + '"}');
 
       $.ajax({
         type: "POST",
         url: baseApiUri + sendpifmeldingAction,
         data: postData
       });
-  });  
+  });    
 
- $("#sendText").submit(function(e){
-       e.preventDefault();
-  });  
+$("#sendLengde").click(function() {
+      var val = $("#lengde").val()
+      var postData=JSON.parse('{"Type": "Lengde", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
+
+      $.ajax({
+        type: "POST",
+        url: baseApiUri + sendpifmeldingAction,
+        data: postData
+      });
+  });      
 
 }
 
@@ -161,8 +168,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
   <body>
     <div id="menu" style="display: flex; min-width: 25%">
       <form id="menuitem sendLength">
-        Lengde: <input type="text" name="text">
-        <input type="submit" value="Send Lengde">
+        Lengde: <input type="text" id="lengde">
+        <button id="sendLengde">Send Lengde</button>
       </form>
       <form id="menuitem sendDirection">
         Retning:<select>
@@ -177,7 +184,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
         <input type="submit" value="Send STOP">
       </form>
         Melding: <input type="text" id="text">
-        <button id="send">Send Melding</button>
+        <button id="sendMelding">Send Melding</button>
     </div>
     <div id="map-canvas"></div>
   </body>
