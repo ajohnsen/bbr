@@ -168,6 +168,7 @@ function handleNoGeolocation(errorFlag) {
     window.setInterval(
       function() {
         sendpifposisjon();
+        hentMeldinger();
       },
       5000
     );
