@@ -149,7 +149,10 @@ function handleNoGeolocation(errorFlag) {
 	  	  var type = data[i].type;
 	      var innhold = data[i].innhold;
 	      var tid = data[i].tid;
-	      tekst = tekst + type + ":" + innhold + "<br/>";
+	      tekst = tekst + type + ":" + innhold;
+	      if(i < data.length -1){
+	    	  tekst = tekst + "<br/>"
+	      }
 	  	}
 	  	$("#pif-melding").html(tekst);
     };
