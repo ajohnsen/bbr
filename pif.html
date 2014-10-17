@@ -98,6 +98,8 @@ function handleNoGeolocation(errorFlag) {
           url: baseApiUri + sendGjeldendePosisjon,
           data: posData
         });
+        setMarker(lat, long, null, "images/person.png");
+
       }
     }
 
@@ -114,25 +116,9 @@ google.maps.event.addDomListener(window, 'load', initialize);
   </head>
   <body>
     <div id="menu" style="display: flex; min-width: 25%">
-      <form id="menuitem sendLength">
-        Lengde: <input type="text" name="text">
-        <input type="submit" value="Send Lengde">
-      </form>
-      <form id="menuitem sendDirection">
-        Retning:<select>
-        <option value="North">Nord</option>
-        <option value="East">Øst</option>
-        <option value="South">Sør</option>
-        <option value="West">Vest</option>
-      </select>
-        <input type="submit" value="Send retning">
-      </form>
-      <form id="menuitem sendStop">
-        <input type="submit" value="Send STOP">
-      </form>
-      <form id="menuitem sendText">
+      <form id="menuitem sendPostKode">
         Melding: <input type="text" name="text">
-        <input type="submit" value="Send Melding">
+        <input type="submit" value="Send Postkode">
       </form>
     </div>
     <div id="map-canvas"></div>
