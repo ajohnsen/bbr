@@ -16,6 +16,9 @@
     <script>
 
 var map;
+var markers = [];
+var postMarkerIndex = 0;
+var pifMarkerIndex = 1;
 var appId = "4bdc79c";
 var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/base/";
 var hentgjeldendepostAction = "hentgjeldendepost";
@@ -53,7 +56,13 @@ function initialize() {
 
 }
 
-function setMarker(lat, lng, title, iconUrl){
+function setMarker(lat, lng, title, type){
+    var iconUrl;
+    var markerIndex = 0;
+    if (type == "pif"){
+      iconUrl = "images/person.png";
+      markerIndex = pifMarkerIndex;
+    }
     var myLatlng = new google.maps.LatLng(lat,lng);
 
     // To add the marker to the map, use the 'map' property
@@ -63,6 +72,23 @@ function setMarker(lat, lng, title, iconUrl){
         title: title,
         icon: iconUrl
     });  
+
+    markers[markerIndex] = marker;
+    markers[markerIndex].setMap(map);
+}
+
+function deleteMarker(type){
+  if (type == "pif"){
+    if (markers[pifMarkerIndex] != null){
+      markers[pifMarkerIndex].setMap(null);
+    }
+    
+  } else {
+    if (markers[postMarkerIndex] != null){
+      markers[postMarkerIndex].setMap(null);
+    }
+  }
+
 }
 
 function handleNoGeolocation(errorFlag) {
@@ -90,6 +116,7 @@ function handleNoGeolocation(errorFlag) {
         function( data ) {
           noOfCalls++;
           //  alert("Call " + noOfCalls + ": " + data.navn + ", gps(" + data.gps.longitude + " " + data.gps.latitude + ")");
+          deleteMarker(null);
           setMarker(data.gps.latitude, data.gps.longitude, data.navn, null);
         }
       );
@@ -98,7 +125,8 @@ function handleNoGeolocation(errorFlag) {
       $.getJSON(
         baseApiUri + hentpifposisjonAction + "/" + appId,
         function( data ) {
-          setMarker(data.latitude, data.longitude, null, "images/person.png");
+          deleteMarker("pif");
+          setMarker(data.latitude, data.longitude, null, "pif");
         }
       );
     };    
@@ -108,7 +136,7 @@ function handleNoGeolocation(errorFlag) {
         hentgjeldendepost();
         hentpifposisjon();
       },
-      5000
+      3000
     );
   });
 
