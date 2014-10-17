@@ -19,7 +19,7 @@ var map;
 var appId = "4bdc79c";
 var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/pif/";
 var sendGjeldendePosisjon = "sendpifposisjon";
-
+var sendpostkode = "sendpostkode";
 
 function initialize() {
 
@@ -84,9 +84,9 @@ function handleNoGeolocation(errorFlag) {
     var noOfCalls = 0;
     
     var sendpifposisjon = function() {
-    navigator.geolocation.getCurrentPosition(success);
+      navigator.geolocation.getCurrentPosition(success);
 
-    function success(position) {
+      function success(position) {
          var lat = position.coords.latitude;
          var long = position.coords.longitude;
        
@@ -103,12 +103,37 @@ function handleNoGeolocation(errorFlag) {
       }
     }
 
-    window.setInterval(
+    $("#sendPostKode").submit(
+      function( event ) {
+        event.preventDefault();
+
+        var sendPostKodeForm = $(this);
+        var kode = sendPostKodeForm.find( "input[name='Kode']" ).val();
+        var postnummer = sendPostKodeForm.find( "input[name='Postnummer']" ).val()
+
+        navigator.geolocation.getCurrentPosition(success);
+
+        function success(position) {
+          var latitude = position.coords.latitude;
+          var longitude = position.coords.longitude;
+
+          var posData=JSON.parse('{"Kode":"'+ kode + '", "Postnummer":"'+ postnummer + '", "LagId":"'+ appId + '", "Koordinat": {"Longitude": "' + longitude + '","Latitude": "' + latitude + '"}}');
+
+          $.ajax({
+            type: "POST",
+            url: baseApiUri + sendpostkode,
+            data: posData
+          });
+        }
+      }
+    );
+
+    /*window.setInterval(
       function() {
         sendpifposisjon();
       },
       5000
-    );
+    );*/
   });
 
 google.maps.event.addDomListener(window, 'load', initialize);
@@ -116,8 +141,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
   </head>
   <body>
     <div id="menu" style="display: flex; min-width: 25%">
-      <form id="menuitem sendPostKode">
-        Melding: <input type="text" name="text">
+      <form id="sendPostKode">
+        Kode:
+        <input type="text" name="Kode">
+        Postnummer:
+        <input type="text" name="Postnummer">
         <input type="submit" value="Send Postkode">
       </form>
     </div>
