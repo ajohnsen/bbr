@@ -23,6 +23,7 @@ var appId = "4bdc79c";
 var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/base/";
 var hentgjeldendepostAction = "hentgjeldendepost";
 var hentpifposisjonAction = "hentpifposisjon";
+var sendpifmeldingAction = "sendpifmelding";
 
 
 function initialize() {
@@ -53,6 +54,21 @@ function initialize() {
     // Browser doesn't support Geolocation
     handleNoGeolocation(false);
   }
+
+  $("#send").click(function() {
+      var text = $("#text").val()
+      var postData=JSON.parse('{"Type": "Fritekst", "Innhold":"'+ text + '", "LagId": "4bdc79c"}');
+
+      $.ajax({
+        type: "POST",
+        url: baseApiUri + sendpifmeldingAction,
+        data: postData
+      });
+  });  
+
+ $("#sendText").submit(function(e){
+       e.preventDefault();
+  });  
 
 }
 
@@ -109,13 +125,10 @@ function handleNoGeolocation(errorFlag) {
 }
 
   $(document).ready(function() {
-    var noOfCalls = 0;
     var hentgjeldendepost = function() {
       $.getJSON(
         baseApiUri + hentgjeldendepostAction + "/" + appId,
         function( data ) {
-          noOfCalls++;
-          //  alert("Call " + noOfCalls + ": " + data.navn + ", gps(" + data.gps.longitude + " " + data.gps.latitude + ")");
           deleteMarker(null);
           setMarker(data.gps.latitude, data.gps.longitude, data.navn, null);
         }
@@ -136,9 +149,11 @@ function handleNoGeolocation(errorFlag) {
         hentgjeldendepost();
         hentpifposisjon();
       },
-      3000
+      10000
     );
   });
+
+
 
 google.maps.event.addDomListener(window, 'load', initialize);
     </script>
@@ -161,10 +176,8 @@ google.maps.event.addDomListener(window, 'load', initialize);
       <form id="menuitem sendStop">
         <input type="submit" value="Send STOP">
       </form>
-      <form id="menuitem sendText">
-        Melding: <input type="text" name="text">
-        <input type="submit" value="Send Melding">
-      </form>
+        Melding: <input type="text" id="text">
+        <button id="send">Send Melding</button>
     </div>
     <div id="map-canvas"></div>
   </body>
