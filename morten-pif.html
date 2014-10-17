@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <style>
+      html, body, #map-canvas {
+        height: 100%;
+        margin: 0px;
+        padding: 0px
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="base-api/latlong.js"></script>
+    <script>
+var map;
+
+function initialize() {
+
+  var mapOptions = {
+    zoom: 16
+  };
+  map = new google.maps.Map(document.getElementById('map-canvas'),
+      mapOptions);
+
+  // Try HTML5 geolocation
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude,
+                                       position.coords.longitude);
+
+      var infowindow = new google.maps.InfoWindow({
+        map: map,
+        position: pos,
+      });
+
+      map.setCenter(pos);
+
+   	setMarker(position.coords.latitude,position.coords.longitude);
+   	var nextPos = getPositionFromPositionBeringAndLength("180","30",position.coords.latitude,position.coords.longitude);
+   	
+   	//var nextPos = LatLon.prototype.destinationPoint();
+   	
+   	setMarker(nextPos.lat,nextPos.lon);
+    }, function() {
+      handleNoGeolocation(true);
+    });
+  } else {
+    // Browser doesn't support Geolocation
+    handleNoGeolocation(false);
+  }
+  
+}
+
+function getPositionFromPositionBeringAndLength(brng, dist, lat, lon) {
+    var radius=6371;
+    var θ = Number(brng).toRadians();
+    var δ = Number(dist/1000) / radius; // angular distance in radians
+
+    var φ1 = lat.toRadians();
+    var λ1 = lon.toRadians();
+
+    var φ2 = Math.asin( Math.sin(φ1)*Math.cos(δ) + Math.cos(φ1)*Math.sin(δ)*Math.cos(θ) );
+    var λ2 = λ1 + Math.atan2(Math.sin(θ)*Math.sin(δ)*Math.cos(φ1),
+                             Math.cos(δ)-Math.sin(φ1)*Math.sin(φ2));
+    λ2 = (λ2+3*Math.PI) % (2*Math.PI) - Math.PI; // normalise to -180..+180º
+
+    return new LatLon(φ2.toDegrees(), λ2.toDegrees());
+};
+
+function LatLon(lat, lon, height, radius) {
+    // allow instantiation without 'new'
+    if (!(this instanceof LatLon)) return new LatLon(lat, lon, height, radius);
+
+    if (typeof height == 'undefined') height = 0;
+    if (typeof radius == 'undefined') radius = 6371;
+    radius = Math.min(Math.max(radius, 6353), 6384);
+
+    this.lat    = Number(lat);
+    this.lon    = Number(lon);
+    this.height = Number(height);
+    this.radius = Number(radius);
+}
+
+function setMarker(lat, lng){
+    var myLatlng = new google.maps.LatLng(lat,lng);
+
+    // To add the marker to the map, use the 'map' property
+    var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: map,
+        title:"Hello World!"
+    });
+}
+
+function handleNoGeolocation(errorFlag) {
+  if (errorFlag) {
+    var content = 'Error: The Geolocation service failed.';
+  } else {
+    var content = 'Error: Your browser doesn\'t support geolocation.';
+  }
+
+  var options = {
+    map: map,
+    position: new google.maps.LatLng(60, 105),
+    content: content
+  };
+
+  var infowindow = new google.maps.InfoWindow(options);
+  map.setCenter(options.position);
+}
+
+google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+  </head>
+  <body>
+    <div id="map-canvas"></div>
+  </body>
+</html>
