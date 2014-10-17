@@ -103,13 +103,11 @@ function handleNoGeolocation(errorFlag) {
       }
     }
 
-    $("#sendPostKode").submit(
-      function( event ) {
-        event.preventDefault();
-
-        var sendPostKodeForm = $(this);
-        var kode = sendPostKodeForm.find( "input[name='Kode']" ).val();
-        var postnummer = sendPostKodeForm.find( "input[name='Postnummer']" ).val()
+    $("#sendPostKodeButton").click(
+      function() {
+        var sendPostKodeForm = $("#sendPostKode");
+        var kode = $("#Kode").val();
+        var postnummer = $("#Postnummer").val()
 
         navigator.geolocation.getCurrentPosition(success);
 
@@ -141,13 +139,11 @@ google.maps.event.addDomListener(window, 'load', initialize);
   </head>
   <body>
     <div id="menu" style="display: flex; min-width: 25%">
-      <form id="sendPostKode">
         Kode:
         <input type="text" name="Kode">
         Postnummer:
         <input type="text" name="Postnummer">
-        <input type="submit" value="Send Postkode">
-      </form>
+        <button id="sendPostKodeButton">Send Postkode</button>
     </div>
     <div id="map-canvas"></div>
   </body>
