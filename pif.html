@@ -135,10 +135,18 @@ function handleNoGeolocation(errorFlag) {
         $.getJSON(
           baseApiUri + hentgjeldendepostAction + "/" + appId,
           function( data ) {
-              var type = data[data.length -1].type;
-              var innhold = data[data.length -1].innhold;
-              var tid = data[data.length -1].tid;
-              $("#pif-melding").text(type + ":" + innhold);
+        	  var tekst = "";
+        	  var i = data.length -4;
+        	  if(i < 0){
+        		  i = 0;
+        	  }
+        	  for (; i < data.length; i++) { 
+        		  var type = data[i].type;
+                  var innhold = data[i].innhold;
+                  var tid = data[i].tid;
+                  tekst = tekst + type + ":" + innhold + "<br/>";
+        		}
+        	  $("#pif-melding").html(tekst);
           }
         );
     };
