@@ -23,6 +23,8 @@ var appId = "4bdc79c";
 var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/pif/";
 var sendGjeldendePosisjon = "sendpifposisjon";
 var sendpostkode = "sendpostkode";
+var hentgjeldendepostAction = "hentmeldinger";
+
 
 function initialize() {
 
@@ -127,10 +129,19 @@ function handleNoGeolocation(errorFlag) {
         });
         deleteMarker("pif");
         setMarker(lat, long, null, "pif");
-
       }
-    }
-
+    };
+    var hentMeldinger = function() {
+        $.getJSON(
+          baseApiUri + hentgjeldendepostAction + "/" + appId,
+          function( data ) {
+              var type = data[data.length -1].type;
+              var innhold = data[data.length -1].innhold;
+              var tid = data[data.length -1].tid;
+              $("#pif-melding").text(type + " " + innhold + " " + tid);
+          }
+        );
+    };
     $("#sendPostKodeButton").click(
       function() {
         var sendPostKodeForm = $("#sendPostKode");
@@ -173,6 +184,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
         <input type="text" id="Postnummer">
         <button id="sendPostKodeButton">Send Postkode</button>
     </div>
+    <div id="pif-melding"></div>
     <div id="map-canvas"></div>
   </body>
 </html>
