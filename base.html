@@ -12,10 +12,12 @@
       }
     </style>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script>
 var map;
 
 function initialize() {
+
   var mapOptions = {
     zoom: 16
   };
@@ -34,6 +36,7 @@ function initialize() {
       });
 
       map.setCenter(pos);
+
     }, function() {
       handleNoGeolocation(true);
     });
@@ -41,6 +44,19 @@ function initialize() {
     // Browser doesn't support Geolocation
     handleNoGeolocation(false);
   }
+
+  setMarker(59.675376,10.60732);
+}
+
+function setMarker(lat, lng){
+    var myLatlng = new google.maps.LatLng(lat,lng);
+
+    // To add the marker to the map, use the 'map' property
+    var marker = new google.maps.Marker({
+        position: myLatlng,
+        map: map,
+        title:"Hello World!"
+    });  
 }
 
 function handleNoGeolocation(errorFlag) {
