@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Base app</title>
+
+	<script type="text/javascript" src="jquery-2.1.1.min.js"></script>
+
+	<script type="text/javascript">
+
+	var appId = 215;
+	var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/base/";
+	var hentgjeldendepostAction = "hentgjeldendepost";
+
+	$(document).ready(function() {
+		$("#hentgjeldendepost").click(function() {
+			$.getJSON(
+				baseApiUri + hentgjeldendepostAction + "/" + appId,
+				function( data ) {
+					var text = data.navn + ", gps(" + data.gps.longitude + " " + data.gps.latitude + ")";
+			  		$("#result1").text(text);
+				}
+			);
+		});
+
+		/*window.setInterval(
+			function() {
+		 		hentgjeldendepost();
+			},
+			10000
+		);*/
+
+		var noOfCalls = 0;
+		var hentgjeldendepost = function() {
+			$.getJSON(
+				baseApiUri + hentgjeldendepostAction + "/" + appId,
+				function( data ) {
+					noOfCalls++;
+					var text = "Call " + noOfCalls + ": " + data.navn + ", gps(" + data.gps.longitude + " " + data.gps.latitude + ")";
+			  		$("#result2").text(text);
+				}
+			);
+		};
+
+		hentgjeldendepost();
+	});
+
+	</script>
+</head>
+<body>
+<h2>base api</h2>
+
+
+<fieldset>
+<legend>Koder</legend>
+<table>
+	<tr>
+		<td>
+			<div id="hentgjeldendepost">hentgjeldendepost</div>
+		</td>
+		<td>
+			<div id="result1"></div>
+		</td>
+	</tr>
+
+	<tr>
+		<td>
+			<div>timer1</div>
+		</td>
+		<td>
+			<div id="result2"></div>
+		</td>
+	</tr>
+</table>
+</fieldset>
+
+</body>
+
+</html>
