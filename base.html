@@ -19,6 +19,7 @@ var map;
 var appId = "4bdc79c";
 var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/base/";
 var hentgjeldendepostAction = "hentgjeldendepost";
+var hentpifposisjonAction = "hentpifposisjon";
 
 
 function initialize() {
@@ -92,10 +93,19 @@ function handleNoGeolocation(errorFlag) {
         }
       );
     };
+    var hentpifposisjon = function() {
+      $.getJSON(
+        baseApiUri + hentpifposisjonAction + "/" + appId,
+        function( data ) {
+          setMarker(data.latitude, data.longitude, null);
+        }
+      );
+    };    
 
     window.setInterval(
       function() {
         hentgjeldendepost();
+        hentpifposisjon();
       },
       5000
     );
