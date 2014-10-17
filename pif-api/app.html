@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Base app</title>
+
+	<script type="text/javascript" src="../base-api/jquery-2.1.1.min.js"></script>
+
+	<script type="text/javascript">
+
+	var appId = "4bdc79c";
+	var pifApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/pif/";
+	var erinfisertAction		= "erinfisert";
+	var hentmeldingerAction		= "hentmeldinger";
+
+	$(document).ready(function() {
+		/*window.setInterval(
+			function() {
+		 		erinfisert();
+			},
+			10000
+		);*/
+
+		var noOfCallserinfisert = 0;
+		var erinfisert = function() {
+			$.getJSON(
+				pifApiUri + erinfisertAction + "/" + appId,
+				function( data ) {
+					noOfCallserinfisert++;
+					var text = "Call " + noOfCallserinfisert + ": " + (data === "true" ? " Infisert" : "Nei");
+			  		$("#result1").text(text);
+				}
+			);
+		};
+
+		var noOfCallshentmeldinger = 0;
+		var hentmeldinger = function() {
+			$.getJSON(
+				pifApiUri + hentmeldingerAction + "/" + appId,
+				function( data ) {
+					noOfCallshentmeldinger++;
+
+					var text = "";
+					$.each(data, function( index, value ) {
+						text = text + "type: " + value.type + ", innhold: " + value.innhold + "<br/>";
+					});
+			  		$("#result2").html(text);
+				}
+			);
+		};
+
+		erinfisert();
+		hentmeldinger();
+	});
+
+	</script>
+</head>
+<body>
+<h2>pif api</h2>
+
+
+<fieldset>
+<legend>Koder</legend>
+<table border="1">
+	<tr>
+		<td>
+			<div>erinfisert</div>
+		</td>
+		<td>
+			<div id="result1"></div>
+		</td>
+	</tr>
+
+
+	<tr>
+		<td>
+			<div>hentmeldinger</div>
+		</td>
+		<td>
+			<div id="result2"></div>
+		</td>
+	</tr>
+</table>
+</fieldset>
+
+</body>
+
+</html>

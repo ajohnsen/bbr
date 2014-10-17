@@ -7,9 +7,12 @@
 
 	<script type="text/javascript">
 
-	var appId = 215;
+	var appId = "4bdc79c";
 	var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/base/";
-	var hentgjeldendepostAction = "hentgjeldendepost";
+	var hentgjeldendepostAction		= "hentgjeldendepost";
+	var hentpifposisjonAction		= "hentpifposisjon";
+	var hentregistrertekoderAction	= "hentregistrertekoder";
+	var sendpifmeldingAction 		= "sendpifmelding";
 
 	$(document).ready(function() {
 		$("#hentgjeldendepost").click(function() {
@@ -18,6 +21,25 @@
 				function( data ) {
 					var text = data.navn + ", gps(" + data.gps.longitude + " " + data.gps.latitude + ")";
 			  		$("#result1").text(text);
+				}
+			);
+		});
+
+		$("#hentpifposisjon").click(function() {
+			$.getJSON(
+				baseApiUri + hentpifposisjonAction + "/" + appId,
+				function( data ) {
+					var text = data.latitude + ", " + data.longitude + ", " + data.lagId + ", " + data.infisert + ", " + data.erinfisert;
+			  		$("#result3").text(text);
+				}
+			);
+		});
+
+		$("#hentregistrertekoder").click(function() {
+			$.getJSON(
+				baseApiUri + hentregistrertekoderAction + "/" + appId,
+				function( data ) {
+			  		$("#result5").text(data);
 				}
 			);
 		});
@@ -42,6 +64,30 @@
 		};
 
 		hentgjeldendepost();
+
+		$("#sendMelding").click(function() {
+			var type = $("#pifMeldingType option:selected").text();
+			var melding = $("#pifMelding").val();
+			if (melding === null || melding.length == 0) {
+				alert("Skriv inn melding!");
+				return;
+			} else {
+				var jsonPayload = {
+				  "Type": type,
+				  "Innhold": melding,
+				  "LagId": appId
+				};
+
+				$.ajax({
+					type: "POST",
+					url: baseApiUri + sendpifmeldingAction,
+					data: jsonPayload,
+					success: function( data ) {
+							$( "#pifMeldingSvar" ).html(data);
+					}
+				});
+			}
+		});
 	});
 
 	</script>
@@ -52,7 +98,7 @@
 
 <fieldset>
 <legend>Koder</legend>
-<table>
+<table border="1">
 	<tr>
 		<td>
 			<div id="hentgjeldendepost">hentgjeldendepost</div>
@@ -70,8 +116,70 @@
 			<div id="result2"></div>
 		</td>
 	</tr>
+
+
+	<tr>
+		<td>
+			<div id="hentpifposisjon">hentpifposisjon</div>
+		</td>
+		<td>
+			<div id="result3"></div>
+		</td>
+	</tr>
+
+
+	<tr>
+		<td>
+			<div id="hentregistrertekoder">hentregistrertekoder</div>
+		</td>
+		<td>
+			<div id="result5"></div>
+		</td>
+	</tr>
 </table>
 </fieldset>
+
+
+<fieldset>
+<legend>Send melding</legend>
+<table border="1">
+	<tr>
+		<td>
+			<div>Type</div>
+		</td>
+		<td>
+			<select id="pifMeldingType">
+				<option value="Fritekst">Fritekst</option>
+				<option value="Lengde">Lengde</option>
+				<option value="Himmelretning">Himmelretning</option>
+				<option value="Stopp">Stopp</option>
+			</select>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div>Melding</div>
+		</td>
+		<td>
+			<input id="pifMelding" />
+		</td>
+	</tr>
+	<tr>
+		<td colspan="2">
+			<button id="sendMelding">Send melding</button>
+		</td>
+	</tr>
+	<tr>
+		<td>
+			<div>Svar</div>
+		</td>
+		<td>
+			<input id="pifMeldingSvar" />
+		</td>
+	</tr>
+</table>
+</fieldset>
+
 
 </body>
 
