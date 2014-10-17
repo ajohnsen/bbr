@@ -17,8 +17,8 @@
 
 var map;
 var appId = "4bdc79c";
-var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/base/";
-var hentgjeldendepostAction = "hentgjeldendepost";
+var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/pif/";
+var sendGjeldendePosisjon = "sendpifposisjon";
 
 
 function initialize() {
@@ -82,20 +82,28 @@ function handleNoGeolocation(errorFlag) {
 
   $(document).ready(function() {
     var noOfCalls = 0;
-    var hentgjeldendepost = function() {
-      $.getJSON(
-        baseApiUri + hentgjeldendepostAction + "/" + appId,
-        function( data ) {
-          noOfCalls++;
-          //  alert("Call " + noOfCalls + ": " + data.navn + ", gps(" + data.gps.longitude + " " + data.gps.latitude + ")");
-          setMarker(data.gps.latitude, data.gps.longitude, data.navn);
-        }
-      );
-    };
+    
+    var sendpifposisjon = function() {
+    navigator.geolocation.getCurrentPosition(success);
+
+    function success(position) {
+         var lat = position.coords.latitude;
+         var long = position.coords.longitude;
+       
+
+        var posData=JSON.parse('{"Posisjon": {"Longitude": "' + long + '","Latitude": "' + lat + '"},"LagId":"'+ appId + '"}');
+
+        $.ajax({
+          type: "POST",
+          url: baseApiUri + sendGjeldendePosisjon,
+          data: posData
+        });
+      }
+    }
 
     window.setInterval(
       function() {
-        hentgjeldendepost();
+        sendpifposisjon();
       },
       5000
     );
