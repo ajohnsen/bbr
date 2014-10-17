@@ -138,7 +138,7 @@ function handleNoGeolocation(errorFlag) {
               var type = data[data.length -1].type;
               var innhold = data[data.length -1].innhold;
               var tid = data[data.length -1].tid;
-              $("#pif-melding").text(type + " " + innhold + " " + tid);
+              $("#pif-melding").text(type + ":" + innhold);
           }
         );
     };
