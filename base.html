@@ -53,14 +53,15 @@ function initialize() {
 
 }
 
-function setMarker(lat, lng, title){
+function setMarker(lat, lng, title, iconUrl){
     var myLatlng = new google.maps.LatLng(lat,lng);
 
     // To add the marker to the map, use the 'map' property
     var marker = new google.maps.Marker({
         position: myLatlng,
         map: map,
-        title: title
+        title: title,
+        icon: iconUrl
     });  
 }
 
@@ -89,7 +90,7 @@ function handleNoGeolocation(errorFlag) {
         function( data ) {
           noOfCalls++;
           //  alert("Call " + noOfCalls + ": " + data.navn + ", gps(" + data.gps.longitude + " " + data.gps.latitude + ")");
-          setMarker(data.gps.latitude, data.gps.longitude, data.navn);
+          setMarker(data.gps.latitude, data.gps.longitude, data.navn, null);
         }
       );
     };
@@ -97,7 +98,7 @@ function handleNoGeolocation(errorFlag) {
       $.getJSON(
         baseApiUri + hentpifposisjonAction + "/" + appId,
         function( data ) {
-          setMarker(data.latitude, data.longitude, null);
+          setMarker(data.latitude, data.longitude, null, "images/person.png");
         }
       );
     };    
