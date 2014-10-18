@@ -135,20 +135,26 @@ function handleNoGeolocation(errorFlag) {
         $.getJSON(
           baseApiUri + hentgjeldendepostAction + "/" + appId,
           function( data ) {
-        	  var tekst = "";
-        	  var i = data.length -4;
-        	  if(i < 0){
-        		  i = 0;
-        	  }
-        	  for (; i < data.length; i++) { 
-        		  var type = data[i].type;
-                  var innhold = data[i].innhold;
-                  var tid = data[i].tid;
-                  tekst = tekst + type + ":" + innhold + "<br/>";
-        		}
-        	  $("#pif-melding").html(tekst);
+        	  skrivMeldingTilPif(data);
           }
         );
+    };
+    var skrivMeldingTilPif = function(data) {
+    	var tekst = "";
+	  	var i = data.length -4;
+	  	if(i < 0){
+	  		i = 0;
+	  	}
+	  	for (; i < data.length; i++) {
+	  	  var type = data[i].type;
+	      var innhold = data[i].innhold;
+	      var tid = data[i].tid;
+	      tekst = tekst + type + ":" + innhold;
+	      if(i < data.length -1){
+	    	  tekst = tekst + "<br/>"
+	      }
+	  	}
+	  	$("#pif-melding").html(tekst);
     };
     $("#sendPostKodeButton").click(
       function() {
@@ -173,12 +179,26 @@ function handleNoGeolocation(errorFlag) {
       }
     );
 
+    var erInfisert = function() {
+       $.getJSON(
+          baseApiUri + "erinfisert/" + appId,
+          function( data ) {
+            if (data == false) {  
+              document.body.style.backgroundColor ='white'
+            } else {
+              document.body.style.backgroundColor ='red'
+            }
+          } 
+        );
+    }
+
     window.setInterval(
       function() {
         sendpifposisjon();
         hentMeldinger();
+        erInfisert();
       },
-      5000
+      2000
     );
   });
 
