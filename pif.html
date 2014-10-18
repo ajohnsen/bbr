@@ -24,6 +24,8 @@ var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/pif/";
 var sendGjeldendePosisjon = "sendpifposisjon";
 var sendpostkode = "sendpostkode";
 var hentgjeldendepostAction = "hentmeldinger";
+var coordLat;
+var coordLong;
 
 
 function initialize() {
@@ -136,6 +138,28 @@ function handleNoGeolocation(errorFlag) {
           baseApiUri + hentgjeldendepostAction + "/" + appId,
           function( data ) {
         	  skrivMeldingTilPif(data);
+            for (i = 0; i < data.length; i++) {
+              var type = data[i].type;
+              var innhold = data[i].innhold;
+              if(type = "Lengde") {
+                if (innhold > 1000) {
+                  if(innhold.substring(0,2) == "10") {
+                    coordLong = innhold;
+                  } else if(innhold.substring(0,2) == "59"){
+                    coordLat = innhold;
+                  }
+                  if(coordLat != null && coordLong != null) {
+                    setMarker(coordLat.substring(0,2) + 
+                      "." + 
+                      coordLat.substring(2,coordLat.length), 
+                      coordLong.substring(0,2) + 
+                      "." + 
+                      coordLong.substring(2,coordLong.length), null, null);
+                  } 
+                }
+              }
+              var innhold = data[i].innhold;
+            }
           }
         );
     };
@@ -149,7 +173,10 @@ function handleNoGeolocation(errorFlag) {
 	  	  var type = data[i].type;
 	      var innhold = data[i].innhold;
 	      var tid = data[i].tid;
-	      tekst = tekst + type + ":" + innhold + "<br/>";
+	      tekst = tekst + type + ":" + innhold;
+	      if(i < data.length -1){
+	    	  tekst = tekst + "<br/>"
+	      }
 	  	}
 	  	$("#pif-melding").html(tekst);
     };
