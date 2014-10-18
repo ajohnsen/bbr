@@ -188,28 +188,19 @@ function handleNoGeolocation(errorFlag) {
         function( data ) {
           deleteMarker("pif");
           setMarker(data.latitude, data.longitude, null, "pif");
+          if (data.erinfisert == false) {  
+              document.body.style.backgroundColor ='white'
+            } else {
+              document.body.style.backgroundColor ='red'
+            }
         }
       );
     };    
-    
-    var erInfisert = function() {
-        $.getJSON(
-           baseApiUri + "erinfisert/" + appId,
-           function( data ) {
-             if (data == false) {  
-               document.body.style.backgroundColor ='white'
-             } else {
-               document.body.style.backgroundColor ='red'
-             }
-           } 
-         );
-   	}
 
     window.setInterval(
       function() {
         hentgjeldendepost();
         hentpifposisjon();
-        erInfisert();
       },
       3000
     );
