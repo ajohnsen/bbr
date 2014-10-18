@@ -24,6 +24,7 @@ var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/base/";
 var hentgjeldendepostAction = "hentgjeldendepost";
 var hentpifposisjonAction = "hentpifposisjon";
 var sendpifmeldingAction = "sendpifmelding";
+var hentregistrertekoderAction  = "hentregistrertekoder";
 var postLatitude;
 var postLongitude;
 
@@ -190,17 +191,26 @@ function handleNoGeolocation(errorFlag) {
           setMarker(data.latitude, data.longitude, null, "pif");
           if (data.erinfisert == false) {  
               document.body.style.backgroundColor ='white'
-            } else {
+          } else {
               document.body.style.backgroundColor ='red'
-            }
+          }
         }
       );
-    };    
+    };
+    var hentregistrertekoder = function() {
+      $.getJSON(
+        baseApiUri + hentregistrertekoderAction + "/" + appId,
+        function( data ) {
+            $("#registrerteKoder").text(data);
+        }
+      ); 
+    }; 
 
     window.setInterval(
       function() {
         hentgjeldendepost();
         hentpifposisjon();
+        hentregistrertekoder();
       },
       3000
     );
@@ -226,6 +236,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
         Melding: <input type="text" id="text">
         <button id="sendMelding">Send Melding</button>
         <button id="foo">Foo</button>
+        <span id="registrerteKoder"></span>
     </div>
     <div id="map-canvas"></div>
   </body>
