@@ -24,6 +24,8 @@ var baseApiUri = "http://bouvet-code-camp.azurewebsites.net:80/api/game/base/";
 var hentgjeldendepostAction = "hentgjeldendepost";
 var hentpifposisjonAction = "hentpifposisjon";
 var sendpifmeldingAction = "sendpifmelding";
+var postLatitude;
+var postLongitude;
 
 
 function initialize() {
@@ -64,52 +66,56 @@ function initialize() {
         url: baseApiUri + sendpifmeldingAction,
         data: postData
       });
-  });    
+  });       
 
   $("#sendLengde").click(function() {
         var val = $("#lengde").val()
-        var postData=JSON.parse('{"Type": "Lengde", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
-
-        $.ajax({
-          type: "POST",
-          url: baseApiUri + sendpifmeldingAction,
-          data: postData
-        });
-    });   
-
-  $("#sendLengde").click(function() {
-        var val = $("#lengde").val()
-        var postData=JSON.parse('{"Type": "Lengde", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
-
-        $.ajax({
-          type: "POST",
-          url: baseApiUri + sendpifmeldingAction,
-          data: postData
-        });
+        sendLengde(val);
     });  
 
   $("#sendRetning").click(function() {
         var val = $("#retning").val()
-        var postData=JSON.parse('{"Type": "Himmelretning", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
-
-        $.ajax({
-          type: "POST",
-          url: baseApiUri + sendpifmeldingAction,
-          data: postData
-        });
+        sendRetning(val);
     });  
 
   $("#sendStop").click(function() {
-        var val = "true";
-        var postData=JSON.parse('{"Type": "Stopp", "Innhold":"'+ val + '", "LagId": "'+ appId + '"}');
+        sendStopp("true");
+    });    
+
+$("#foo").click(function() {    
+      sendLengde(postLatitude.replace('.', ''));
+      sendLengde(postLongitude.replace('.', ''));
+    });                  
+}
+
+function sendLengde (lengde){
+  var postData=JSON.parse('{"Type": "Lengde", "Innhold":"'+ lengde + '", "LagId": "'+ appId + '"}');
 
         $.ajax({
           type: "POST",
           url: baseApiUri + sendpifmeldingAction,
           data: postData
         });
-    });              
+}
 
+function sendRetning (retning){
+  var postData=JSON.parse('{"Type": "Himmelretning", "Innhold":"'+ retning + '", "LagId": "'+ appId + '"}');
+
+        $.ajax({
+          type: "POST",
+          url: baseApiUri + sendpifmeldingAction,
+          data: postData
+        });
+}
+
+function sendStopp (bool){
+    var postData=JSON.parse('{"Type": "Stopp", "Innhold":"'+ bool + '", "LagId": "'+ appId + '"}');
+
+    $.ajax({
+      type: "POST",
+      url: baseApiUri + sendpifmeldingAction,
+      data: postData
+    });  
 }
 
 function setMarker(lat, lng, title, type){
@@ -169,6 +175,8 @@ function handleNoGeolocation(errorFlag) {
       $.getJSON(
         baseApiUri + hentgjeldendepostAction + "/" + appId,
         function( data ) {
+          postLatitude = data.gps.latitude;
+          postLongitude = data.gps.longitude;
           deleteMarker(null);
           setMarker(data.gps.latitude, data.gps.longitude, data.navn, null);
         }
@@ -212,6 +220,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
         <button id="sendStop">Send STOP</button>
         Melding: <input type="text" id="text">
         <button id="sendMelding">Send Melding</button>
+        <button id="foo">Foo</button>
     </div>
     <div id="map-canvas"></div>
   </body>
