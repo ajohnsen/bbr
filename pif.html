@@ -142,7 +142,7 @@ function handleNoGeolocation(errorFlag) {
               var type = data[i].type;
               var innhold = data[i].innhold;
               if(type = "Lengde") {
-                if (innhold > 1000) {
+                if (innhold > 10000) {
                   if(innhold.substring(0,2) == "10") {
                     coordLong = innhold;
                   } else if(innhold.substring(0,2) == "59"){
@@ -207,10 +207,10 @@ function handleNoGeolocation(errorFlag) {
        $.getJSON(
           baseApiUri + "erinfisert/" + appId,
           function( data ) {
-            if (data == false) {  
-              document.body.style.backgroundColor ='white'
-            } else {
+            if (data == true) {  
               document.body.style.backgroundColor ='red'
+            } else {
+              document.body.style.backgroundColor ='white'
             }
           } 
         );
