@@ -191,11 +191,25 @@ function handleNoGeolocation(errorFlag) {
         }
       );
     };    
+    
+    var erInfisert = function() {
+        $.getJSON(
+           baseApiUri + "erinfisert/" + appId,
+           function( data ) {
+             if (data == false) {  
+               document.body.style.backgroundColor ='white'
+             } else {
+               document.body.style.backgroundColor ='red'
+             }
+           } 
+         );
+   	}
 
     window.setInterval(
       function() {
         hentgjeldendepost();
         hentpifposisjon();
+        erInfisert();
       },
       3000
     );
